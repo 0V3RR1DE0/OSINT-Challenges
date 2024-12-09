@@ -1,0 +1,63 @@
+{
+    "twitter": {
+      "handle": "@digitalshadow",
+      "bio": "Software Engineer @Mozilla | Open Source Enthusiast | Privacy Advocate | Seattle Native",
+      "joined": "2020-03-15",
+      "recent_tweets": [
+        {
+          "date": "2024-01-15",
+          "text": "Another beautiful morning at Pike Place Market! ☕️ #Seattle #PNWlife",
+          "location": "Pike Place Market, Seattle",
+          "coordinates": "47.6097° N, 122.3422° W"
+        },
+        {
+          "date": "2024-01-14",
+          "text": "Just pushed some updates to our privacy features! Love working with the @Mozilla team.",
+          "location": "Seattle, WA"
+        },
+        {
+          "date": "2024-01-13",
+          "text": "Space Needle looking extra nice today through the fog ✨",
+          "location": "Space Needle, Seattle",
+          "coordinates": "47.6205° N, 122.3493° W"
+        }
+      ]
+    },
+    "instagram": {
+      "recent_posts": [
+        {
+          "date": "2024-01-16",
+          "location": "Kerry Park, Seattle",
+          "caption": "Best skyline views in the city!",
+          "metadata": {
+            "device": "iPhone 14 Pro",
+            "coordinates": "47.6294° N, 122.3584° W"
+          }
+        },
+        {
+          "date": "2024-01-12",
+          "location": "Mozilla Seattle Office",
+          "caption": "Another day at the office 💻",
+          "metadata": {
+            "device": "iPhone 14 Pro",
+            "coordinates": "47.6062° N, 122.3321° W"
+          }
+        }
+      ]
+    },
+    "github": {
+      "contributions": [
+        {
+          "org": "mozilla",
+          "repo": "privacy-tools",
+          "commits": 156
+        },
+        {
+          "org": "mozilla",
+          "repo": "firefox-ios",
+          "commits": 23
+        }
+      ]
+    }
+  }
+  

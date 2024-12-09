@@ -1,0 +1,362 @@
+---
+layout: default
+---
+<div class="challenge-container animate-fade-in">
+    <div class="challenge-header">
+        <h1>{{ page.title }}</h1>
+        <span class="difficulty {{ page.difficulty | downcase }}">
+            {{ page.difficulty }}
+        </span>
+        <div class="challenge-meta">
+            <span class="category">{{ page.category }}</span>
+            <span class="timer" id="challengeTimer">Time: 00:00</span>
+        </div>
+    </div>
+
+    <div class="challenge-content">
+        {{ content }}
+    </div>
+
+    <div class="questions-container">
+        {% for question in page.questions %}
+        <div class="question-block" data-question-id="{{ forloop.index }}">
+            <h3>Question {{ forloop.index }}: {{ question.title }}</h3>
+            <p>{{ question.description }}</p>
+            <form class="answer-form" 
+                  data-challenge-id="{{ page.slug }}" 
+                  data-question-id="{{ forloop.index }}"
+                  data-answer="{{ question.answer }}">
+                <div class="form-group">
+                    <input type="text" 
+                           name="answer" 
+                           placeholder="Enter your answer..."
+                           required>
+                    <button type="submit">Submit</button>
+                </div>
+                <div class="message"></div>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if page.files %}
+    <div class="resources-section">
+        <h3>Resources</h3>
+        <div class="files-container">
+            {% for file in page.files %}
+            <a href="{{ file.path | relative_url }}" 
+               class="file-download"
+               download
+               data-filename="{{ file.name }}">
+                <i class="fas fa-download"></i>
+                {{ file.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if page.hints %}
+    <div class="hints-section">
+        <h3>Hints</h3>
+        <div class="hints-container">
+            {% for hint in page.hints %}
+            <div class="hint">
+                <button class="hint-toggle" onclick="toggleHint(this)">Show Hint {{ forloop.index }}</button>
+                <div class="hint-content" style="display: none;">
+                    {{ hint }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.challenge-container {
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 5rem;
+}
+
+.challenge-header {
+    margin-bottom: 2rem;
+}
+
+.challenge-meta {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    align-items: center;
+}
+
+.timer {
+    font-family: monospace;
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.questions-container {
+    margin: 2rem 0;
+}
+
+.question-block {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.question-block h3 {
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.form-group {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.form-group input[type="text"] {
+    flex: 1;
+    padding: 0.25rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    transition: border-color 0.3s ease;
+    height: 32px;
+}
+
+.form-group input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.form-group button {
+    padding: 0.25rem 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    height: 32px;
+    max-width: 80px;
+    position: relative;
+    top: -4.3px;
+}
+
+.form-group button:hover {
+    background-color: var(--secondary-color);
+}
+
+.resources-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.files-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.file-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.file-download:hover {
+    background: var(--secondary-color);
+}
+
+.message {
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.message.success {
+    background-color: rgba(16, 185, 129, 0.1);
+    border: 1px solid var(--success-color);
+    color: var(--success-color);
+}
+
+.message.error {
+    background-color: rgba(239, 68, 68, 0.1);
+    border: 1px solid var(--error-color);
+    color: var(--error-color);
+}
+
+.hints-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.hints-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.hint-toggle {
+    background: none;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.hint-toggle:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.hint-content {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(37, 99, 235, 0.1);
+    border-radius: 6px;
+    font-size: 0.875rem;
+}
+</style>
+
+<script>
+let startTime = Date.now();
+let timerInterval;
+
+function updateTimer() {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const minutes = Math.floor(elapsed / 60);
+    const seconds = elapsed % 60;
+    document.getElementById('challengeTimer').textContent = 
+        `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function saveProgress(challengeId, questionId, timeSpent) {
+    const progress = JSON.parse(localStorage.getItem('challengeProgress') || '{}');
+    if (!progress[challengeId]) {
+        progress[challengeId] = {
+            completedQuestions: [],
+            timeSpent: 0,
+            startTime: null,
+            completed: false
+        };
+    }
+    
+    if (!progress[challengeId].completedQuestions.includes(questionId)) {
+        progress[challengeId].completedQuestions.push(questionId);
+        progress[challengeId].timeSpent = timeSpent;
+        
+        // Check if all questions are completed
+        const totalQuestions = document.querySelectorAll('.question-block').length;
+        if (progress[challengeId].completedQuestions.length === totalQuestions) {
+            progress[challengeId].completed = true;
+            clearInterval(timerInterval);
+            window.location.href = `/completion?challenge=${challengeId}&time=${timeSpent}`;
+        }
+    }
+    
+    localStorage.setItem('challengeProgress', JSON.stringify(progress));
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Start timer
+    startTime = Date.now();
+    timerInterval = setInterval(updateTimer, 1000);
+    
+    // Handle answer form submissions
+    const answerForms = document.querySelectorAll('.answer-form');
+    answerForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const input = form.querySelector('input[type="text"]');
+            const answer = input.value.trim().toLowerCase();
+            const correctAnswer = form.dataset.answer.toLowerCase();
+            const messageDiv = form.querySelector('.message');
+            const challengeId = form.dataset.challengeId;
+            const questionId = form.dataset.questionId;
+            
+            if (answer === correctAnswer) {
+                messageDiv.className = 'message success';
+                messageDiv.textContent = 'Correct!';
+                form.querySelector('button').disabled = true;
+                input.disabled = true;
+                
+                const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+                saveProgress(challengeId, questionId, timeSpent);
+            } else {
+                messageDiv.className = 'message error';
+                messageDiv.textContent = 'Incorrect answer. Try again!';
+            }
+        });
+    });
+
+    // Load existing progress
+    const progress = JSON.parse(localStorage.getItem('challengeProgress') || '{}');
+    const challengeId = document.querySelector('.answer-form').dataset.challengeId;
+    
+    if (progress[challengeId]) {
+        progress[challengeId].completedQuestions.forEach(questionId => {
+            const form = document.querySelector(`.answer-form[data-question-id="${questionId}"]`);
+            if (form) {
+                form.querySelector('input').disabled = true;
+                form.querySelector('button').disabled = true;
+                const messageDiv = form.querySelector('.message');
+                messageDiv.className = 'message success';
+                messageDiv.textContent = 'Completed!';
+            }
+        });
+    }
+});
+
+function toggleHint(button) {
+    const content = button.nextElementSibling;
+    const isHidden = content.style.display === 'none';
+    
+    if (isHidden) {
+        content.style.opacity = '0';
+        content.style.display = 'block';
+        setTimeout(() => {
+            content.style.opacity = '1';
+            content.style.transition = 'opacity 0.3s ease';
+        }, 10);
+        button.textContent = 'Hide Hint';
+    } else {
+        content.style.opacity = '0';
+        content.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => {
+            content.style.display = 'none';
+            button.textContent = 'Show Hint';
+        }, 300);
+    }
+}
+</script>

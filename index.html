@@ -1,0 +1,160 @@
+---
+layout: default
+title: Home
+---
+
+<div class="hero-section">
+    <h1>OSINT Challenges</h1>
+    <p>Test your Open Source Intelligence skills with our interactive challenges.</p>
+</div>
+
+<div class="filters">
+    <div class="filter-group">
+        <label>Difficulty:</label>
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="easy">Easy</button>
+        <button class="filter-btn" data-filter="medium">Medium</button>
+        <button class="filter-btn" data-filter="hard">Hard</button>
+    </div>
+</div>
+
+<div class="challenge-grid">
+    {% assign challenges = site.challenges | sort: 'order' %}
+    {% for challenge in challenges %}
+    <div class="challenge-card animate-fade-in" data-difficulty="{{ challenge.difficulty | downcase }}">
+        <span class="difficulty {{ challenge.difficulty | downcase }}">{{ challenge.difficulty }}</span>
+        <h3>{{ challenge.title }}</h3>
+        <p>{{ challenge.description | truncate: 120 }}</p>
+        <div class="challenge-meta">
+            <span class="points">{{ challenge.points }} points</span>
+            <span class="category">{{ challenge.category }}</span>
+        </div>
+        <a href="{{ challenge.url | relative_url }}" class="challenge-link">Start Challenge</a>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+.hero-section {
+    text-align: center;
+    padding: 4rem 0;
+    margin-bottom: 2rem;
+}
+
+.hero-section h1 {
+    font-size: 3rem;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+}
+
+.hero-section p {
+    font-size: 1.25rem;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+.filters {
+    margin-bottom: 2rem;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-group label {
+    font-weight: 500;
+}
+
+.filter-btn {
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 6px;
+    background: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.challenge-meta {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+.challenge-link {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.challenge-link:hover {
+    background-color: var(--secondary-color);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const challengeCards = document.querySelectorAll('.challenge-card');
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const filter = this.dataset.filter;
+            
+            // Update active button
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter challenges
+            challengeCards.forEach(card => {
+                if (filter === 'all' || card.dataset.difficulty === filter) {
+                    card.style.display = 'block';
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                    }, 10);
+                } else {
+                    card.style.opacity = '0';
+                    setTimeout(() => {
+                        card.style.display = 'none';
+                    }, 300);
+                }
+            });
+        });
+    });
+
+    // Load completed challenges
+    const completed = JSON.parse(localStorage.getItem('completedChallenges') || '[]');
+    challengeCards.forEach(card => {
+        const link = card.querySelector('.challenge-link');
+        const challengeId = link.getAttribute('href').split('/').pop();
+        
+        if (completed.includes(challengeId)) {
+            card.classList.add('completed');
+            const completedBadge = document.createElement('div');
+            completedBadge.className = 'completed-badge';
+            completedBadge.innerHTML = '<i class="fas fa-check"></i> Completed';
+            card.appendChild(completedBadge);
+        }
+    });
+});
+</script>

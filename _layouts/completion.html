@@ -1,0 +1,271 @@
+---
+layout: default
+---
+<div class="completion-container animate-fade-in">
+    <div class="completion-header">
+        <h1>Challenge Complete!</h1>
+        <div class="completion-meta">
+            <span class="completion-time" id="completionTime"></span>
+            <span class="completion-date" id="completionDate"></span>
+        </div>
+    </div>
+
+    <div class="challenge-details">
+        <div class="challenge-header">
+            <h2 id="challengeTitle"></h2>
+            <span id="challengeDifficulty" class="difficulty"></span>
+        </div>
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-label">Time Taken</span>
+                <span class="stat-value" id="timeTaken"></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Questions Completed</span>
+                <span class="stat-value" id="questionsCompleted"></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Category</span>
+                <span class="stat-value" id="category"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="completion-actions">
+        <a href="/" class="action-button">Back to Challenges</a>
+        <button onclick="shareResults()" class="action-button share">Share Results</button>
+    </div>
+</div>
+
+<style>
+.completion-container {
+    max-width: 800px;
+    margin: 6rem auto 2rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.completion-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.completion-header h1 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.completion-meta {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+.challenge-details {
+    margin: 2rem 0;
+    padding: 2rem;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+.challenge-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.challenge-header h2 {
+    margin: 0;
+    color: var(--text-color);
+}
+
+.difficulty {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.difficulty.easy { background-color: var(--success-color); color: white; }
+.difficulty.medium { background-color: #f59e0b; color: white; }
+.difficulty.hard { background-color: var(--error-color); color: white; }
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--text-color);
+    opacity: 0.8;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.completion-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 3rem;
+}
+
+.action-button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.action-button:not(.share) {
+    background: var(--primary-color);
+    color: white;
+}
+
+.action-button.share {
+    background: white;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+
+.action-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes celebrate {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.completion-header h1 {
+    animation: celebrate 1s ease-in-out;
+}
+</style>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const challengeId = urlParams.get('challenge');
+    const timeSpent = parseInt(urlParams.get('time')) || 0;
+    
+    // Load challenge progress
+    const progress = JSON.parse(localStorage.getItem('challengeProgress') || '{}');
+    const challengeData = progress[challengeId] || {};
+    
+    // Format time
+    const minutes = Math.floor(timeSpent / 60);
+    const seconds = timeSpent % 60;
+    const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    
+    // Update UI
+    document.getElementById('timeTaken').textContent = timeString;
+    document.getElementById('completionTime').textContent = new Date().toLocaleTimeString();
+    document.getElementById('completionDate').textContent = new Date().toLocaleDateString();
+    
+    // Load challenge details from localStorage
+    const challenges = {
+        'social-media-sleuth': {
+            title: 'Social Media Sleuth',
+            difficulty: 'Easy',
+            category: 'Social Media'
+        },
+        'network-navigator': {
+            title: 'Network Navigator',
+            difficulty: 'Medium',
+            category: 'Network Analysis'
+        },
+        'crypto-crusader': {
+            title: 'Crypto Crusader',
+            difficulty: 'Hard',
+            category: 'Cryptography'
+        }
+    };
+    
+    const challenge = challenges[challengeId];
+    if (challenge) {
+        document.getElementById('challengeTitle').textContent = challenge.title;
+        const difficultyEl = document.getElementById('challengeDifficulty');
+        difficultyEl.textContent = challenge.difficulty;
+        difficultyEl.className = `difficulty ${challenge.difficulty.toLowerCase()}`;
+        document.getElementById('category').textContent = challenge.category;
+        document.getElementById('questionsCompleted').textContent = 
+            `${challengeData.completedQuestions?.length || 0}/3`;
+    }
+});
+
+function shareResults() {
+    // Create a temporary container for the screenshot
+    const screenshotContent = document.createElement('div');
+    screenshotContent.style.background = '#f8fafc';
+    screenshotContent.style.padding = '2rem';
+    screenshotContent.style.borderRadius = '8px';
+    
+    // Clone the completion meta
+    const metaClone = document.querySelector('.completion-meta').cloneNode(true);
+    metaClone.style.justifyContent = 'flex-start';
+    metaClone.style.marginBottom = '1.5rem';
+    screenshotContent.appendChild(metaClone);
+    
+    // Clone the challenge details
+    const detailsClone = document.querySelector('.challenge-details').cloneNode(true);
+    screenshotContent.appendChild(detailsClone);
+    
+    // Add to document temporarily
+    document.body.appendChild(screenshotContent);
+    
+    html2canvas(screenshotContent, {
+        backgroundColor: '#f8fafc',
+        scale: 2, // Higher quality
+        logging: false,
+        useCORS: true
+    }).then(canvas => {
+        if (navigator.clipboard && navigator.clipboard.write) {
+            // Copy to clipboard as image
+            canvas.toBlob(blob => {
+                navigator.clipboard.write([
+                    new ClipboardItem({
+                        'image/png': blob
+                    })
+                ]).then(() => {
+                    alert('Results copied to clipboard!');
+                    document.body.removeChild(screenshotContent);
+                });
+            });
+        } else {
+            // Download as PNG
+            const link = document.createElement('a');
+            link.download = 'osint-challenge-complete.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            document.body.removeChild(screenshotContent);
+        }
+    });
+}
+</script>

@@ -1,0 +1,46 @@
+title: OSINT Challenges
+email: ""
+description: >-
+  Interactive OSINT challenges platform with modern design and smooth user experience.
+baseurl: ""
+url: ""
+github_username: 0v3rr1de0
+
+# Build settings
+plugins:
+  - jekyll-feed
+
+# Collections
+collections:
+  challenges:
+    output: true
+    permalink: /challenges/:path/
+
+# Default layouts
+defaults:
+  - scope:
+      path: ""
+      type: "challenges"
+    values:
+      layout: "challenge"
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+
+# Exclude from processing
+exclude:
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/
+  - memlog/
+  - assets/css/main.scss

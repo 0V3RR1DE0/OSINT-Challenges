@@ -1,0 +1,25 @@
+[2024-01-17 08:00:15] INFO: Initializing quantum-resistant cipher
+[2024-01-17 08:00:15] DEBUG: RNG seed: 1705449615
+[2024-01-17 08:00:15] DEBUG: Generated key length: 32 bytes
+[2024-01-17 08:00:15] DEBUG: IV length: 16 bytes
+[2024-01-17 08:00:15] INFO: Cipher initialized with parameters:
+- Mode: CBC
+- Padding: PKCS7
+- Block size: 128 bits
+[2024-01-17 08:00:15] DEBUG: Key generation process:
+1. RNG state initialized
+2. Initial entropy collected
+3. Key derivation started
+4. Key material generated
+[2024-01-17 08:00:15] WARN: Using system time as seed
+[2024-01-17 08:00:15] DEBUG: Memory allocated: 4096 bytes
+[2024-01-17 08:00:15] INFO: Encryption process started
+[2024-01-17 08:00:15] DEBUG: Message length: 31 bytes
+[2024-01-17 08:00:15] DEBUG: Padding added: 1 byte
+[2024-01-17 08:00:15] DEBUG: Final ciphertext length: 48 bytes
+[2024-01-17 08:00:15] INFO: Encryption completed successfully
+[2024-01-17 08:00:15] DEBUG: Timing analysis:
+- Key generation: 0.0015s
+- Padding: 0.0003s
+- Encryption: 0.0008s
+[2024-01-17 08:00:15] INFO: Session completed
